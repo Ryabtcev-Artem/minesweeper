@@ -428,7 +428,7 @@ class mineSweeperGame {
             this.allMines = 12;
             if (viewWidth<800){
                 this.fieldRows = 10
-                this.fieldCols = 8
+                this.fieldCols = 10
             }
             if (viewWidth<560){
                 this.fieldRows = 10
@@ -445,8 +445,19 @@ class mineSweeperGame {
             this.fieldRows = 16;
             this.fieldCols = 20;
             this.allMines = 48;
+            if (viewWidth<790){
+                this.fieldRows= 14
+                this.fieldCols = 12
+                this.allMines = 34
+            }
+            if (viewWidth<560){
+                this.fieldRows = 16
+                this.fieldCols = 10
+            }
             this.amountFlags = this.allMines
             gameField.classList.add("middle");
+            gameField.style.gridTemplateColumns= `repeat(${this.fieldCols},1fr)`;
+            gameField.style.gridTemplateRows = `repeat(${this.fieldRows},1fr)`;
              amountFlagsElement.lastElementChild.innerText = this.amountFlags
             this.field(gameField);
         } else if (fieldSize == "30x24") {
