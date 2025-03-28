@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сапер</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="icon" href="./images/bombIcon.svg">
+</head>
+<body>
+    <form id="userRules" onsubmit="return false" action="#">
+        <select class="fieldSize" name="fieldSize" id="userRules__size">
+            <option value="10x8">Простой (12 бомб)</option>
+            <option value="20x16">Средний (48 бомб)</option>
+            <option value="30x24">Сложный (144 бомбы)</option>
+        </select>
+        <button class="startGame">Начать новую игру</button>
+        <div class="amountFlags">
+            <span class="amountFlagsCount"></span>
+            <img width="26" height="26" src="./images/redFlag.svg" alt="amountFlags">
+        </div>
+        <div class="gameTime">
+        </div>
+    </form>
+    <section class="gameField"></section>
+    <audio src="./images/gameOver.mp3" class="gameOverSound"></audio>
+    <audio src="./images/victory.mp3" class="gameVictorySound"></audio>
+    <div class="reset hidden">
+        <div class="questionEnd">
+            <button class="exit">Выйти</button>
+            <button class="newGame">Сыграть ещё раз</button>
+        </div>
+    </div>
+    <script src="./code.js"></script>
+</body>
+</html>
