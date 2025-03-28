@@ -246,6 +246,13 @@ option selected{
     }
 }
 @media (max-width: 576px){
+    .middle{
+        font-size: 34px;
+    }
+    .middle img{
+        width: 34px;
+        height: 34px;
+    }
     .small{
         font-size: 60px;
     }
@@ -288,10 +295,10 @@ option selected{
         height: 35px;
     }
     .middle{
-        font-size: 32px;
+        font-size: 30px;
     }
     .middle img{
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
     }
 }
