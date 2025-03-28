@@ -430,7 +430,7 @@ class mineSweeperGame {
                 this.fieldRows = 10
                 this.fieldCols = 10
             }
-            if (viewWidth<560){
+            if (viewWidth<576){
                 this.fieldRows = 10
                 this.fieldCols = 6
                 this.allMines = 10;
@@ -450,9 +450,10 @@ class mineSweeperGame {
                 this.fieldCols = 12
                 this.allMines = 34
             }
-            if (viewWidth<560){
+            if (viewWidth<576){
                 this.fieldRows = 16
                 this.fieldCols = 10
+                this.allMines = 28
             }
             this.amountFlags = this.allMines
             gameField.classList.add("middle");

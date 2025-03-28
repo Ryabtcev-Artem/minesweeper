@@ -245,7 +245,7 @@ option selected{
         height: 36px;
     }
 }
-@media (max-width: 560px){
+@media (max-width: 576px){
     .small{
         font-size: 60px;
     }
