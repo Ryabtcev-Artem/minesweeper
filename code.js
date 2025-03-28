@@ -13,10 +13,10 @@ class mineSweeperGame {
         gameVictorySound:'.gameVictorySound',
         resetGame: '.reset',
         questionEnd: '.questionEnd',
-        exitBtn:'.exit',
         newGameBtn: '.newGame',
         gameTime: '.gameTime',
-        amountFlags: '.amountFlags'
+        amountFlags: '.amountFlags',
+        timerElement:'.timer'
     };
     fieldRows;
     fieldCols;
@@ -67,32 +67,39 @@ class mineSweeperGame {
             }
         }
     };
-    exitGame=()=>{
-        const amountFlagsElement = document.querySelector(this.selectors.amountFlags)
-        amountFlagsElement.style.display ='none'
-        const gameTimeElement = document.querySelector(this.selectors.gameTime)
-        gameTimeElement.style.display = 'none'
-        const gameField = document.querySelector(this.selectors.gameFieldElement)
-        const resetWindow = document.querySelector(this.selectors.resetGame)
-        const questionEnd = document.querySelector(this.selectors.questionEnd)
-        gameField.classList.remove('small')
-        gameField.classList.remove('middle')
-        gameField.classList.remove('big')
-        gameField.innerHTML = ''
-        resetWindow.style.display = 'none'
-        resetWindow.style.backgroundColor='rgba(155, 155, 155, 0)';
-        questionEnd.style.opacity = '0',
-        gameField.replaceWith(gameField.cloneNode(true));
-    }
+    // Maybe will help
+    // exitGame=()=>{
+    //     const amountFlagsElement = document.querySelector(this.selectors.amountFlags)
+    //     amountFlagsElement.style.display ='none'
+    //     const gameTimeElement = document.querySelector(this.selectors.gameTime)
+    //     gameTimeElement.style.display = 'none'
+    //     const gameField = document.querySelector(this.selectors.gameFieldElement)
+    //     const resetWindow = document.querySelector(this.selectors.resetGame)
+    //     const questionEnd = document.querySelector(this.selectors.questionEnd)
+    //     gameField.classList.remove('small')
+    //     gameField.classList.remove('middle')
+    //     gameField.classList.remove('big')
+    //     gameField.innerHTML = ''
+    //     resetWindow.style.display = 'none'
+    //     resetWindow.style.backgroundColor='rgba(155, 155, 155, 0)';
+    //     questionEnd.style.opacity = '0',
+    //     gameField.replaceWith(gameField.cloneNode(true));
+    // }
     newGame=()=>{
         clearInterval(this.timerInterval)
         const amountFlagsElement = document.querySelector(this.selectors.amountFlags)
         amountFlagsElement.style.display ='none'
         const gameTimeElement = document.querySelector(this.selectors.gameTime)
+        const timerElement = document.querySelector(this.selectors.timerElement)
         gameTimeElement.style.display = 'none'
+        timerElement.style.display = 'none'
         const gameField = document.querySelector(this.selectors.gameFieldElement)
         const resetWindow = document.querySelector(this.selectors.resetGame)
         const questionEnd = document.querySelector(this.selectors.questionEnd)
+        const questionEndImg = questionEnd.querySelector('img')
+        if (questionEndImg){
+             questionEnd.removeChild(questionEndImg)
+        }
         gameField.classList.remove('small')
         gameField.classList.remove('middle')
         gameField.classList.remove('big')
@@ -122,15 +129,17 @@ class mineSweeperGame {
         }
         const resetWindow = document.querySelector(this.selectors.resetGame)
         const questionEnd = document.querySelector(this.selectors.questionEnd)
+        let sadSapperImg = document.createElement('img')
+        sadSapperImg.src = './images/sadSapper.jpg'
+
+        questionEnd.prepend(sadSapperImg)
         resetWindow.style.display = 'flex'
         setTimeout(()=>{
-        resetWindow.style.backgroundColor='rgba(155, 155, 155, 0.3)';
+        resetWindow.style.backgroundColor='rgba(0, 0, 0, 0.6)';
         questionEnd.style.opacity = '1'
         },1000
         )
-        const exitBtn = document.querySelector(this.selectors.exitBtn)
         const newGameBtn = document.querySelector(this.selectors.newGameBtn)
-        exitBtn.addEventListener('click',()=>this.exitGame(),{once:true})
         newGameBtn.addEventListener('click',()=>this.newGame(),{once:true})
     }
     gameWon=()=>{
@@ -139,13 +148,14 @@ class mineSweeperGame {
         clearInterval(this.timerInterval)
         const resetWindow = document.querySelector(this.selectors.resetGame)
         const questionEnd = document.querySelector(this.selectors.questionEnd)
+        let funnySapperImg = document.createElement('img')
+        funnySapperImg.src = './images/funnySapper.jpg'
+        questionEnd.prepend(funnySapperImg)
         resetWindow.style.display = 'flex'
         setTimeout(()=>{
-        resetWindow.style.backgroundColor='rgba(155, 155, 155, 0.3)';
+        resetWindow.style.backgroundColor='rgba(0, 0, 0, 0.6)';
         questionEnd.style.opacity = '1'},1000)
-        const exitBtn = document.querySelector(this.selectors.exitBtn)
         const newGameBtn = document.querySelector(this.selectors.newGameBtn)
-        exitBtn.addEventListener('click',()=>this.exitGame(),{once:true})
         newGameBtn.addEventListener('click',()=>this.newGame(),{once:true})
     }
     setRedFlag = (event)=>{
@@ -162,12 +172,12 @@ class mineSweeperGame {
             const flag = this.allCells[currRow][currCol].element.querySelector('.flag')
             this.allCells[currRow][currCol].isFlagged = false
             this.amountFlags++
-            amountFlagsElement.firstElementChild.innerText = this.amountFlags
+            amountFlagsElement.lastElementChild.innerText = this.amountFlags
             this.allCells[currRow][currCol].element.removeChild(flag)
             return
         }if (this.amountFlags==0){return}
         this.amountFlags--
-        amountFlagsElement.firstElementChild.innerText = this.amountFlags
+        amountFlagsElement.lastElementChild.innerText = this.amountFlags
         let img = document.createElement("img");
         img.src = "./images/redFlag.svg";
         img.classList.add('flag')
@@ -341,6 +351,14 @@ class mineSweeperGame {
                 cell.setAttribute("row", row);
                 cell.setAttribute("col", col);
                 cell.appendChild(wrap);
+                if ((row+col)%2==0){
+                    cell.style.backgroundColor = 'var(--lightGreen)'
+                    wrap.style.backgroundColor = 'var(--lightYellow)'
+                }
+                else{
+                    cell.style.backgroundColor = 'var(--littleDarkGreen)'
+                    wrap.style.backgroundColor = 'var(--darkYellow)'
+                }
                 gameField.appendChild(cell);
                 const cellData = {
                     element: cell,
@@ -362,7 +380,9 @@ class mineSweeperGame {
             clearInterval(this.timerInterval)
         }    
         const gameTimeElement = document.querySelector(this.selectors.gameTime)
-        gameTimeElement.innerText = `00 : 00`
+        const timer = document.querySelector(this.selectors.timerElement)
+        timer.style.display ='flex'
+        gameTimeElement.innerText = `00:00`
         gameTimeElement.style.display = 'flex'
         const startTime = new Date()
         function convert(){
@@ -371,7 +391,7 @@ class mineSweeperGame {
             const startSec = Math.trunc((currTime - startTime)/1000)
             const minDiff = `${Math.trunc(startMin/60)}`.padStart(2,0)
             const secDiff = `${startSec%60}`.padStart(2,0)        
-            const time = `${minDiff} : ${secDiff}`
+            const time = `${minDiff}:${secDiff}`
             gameTimeElement.innerText = time
         }
         this.timerInterval = setInterval(convert,1000)
@@ -379,8 +399,10 @@ class mineSweeperGame {
     }
     startGame = () => {
         const gameTimeElement = document.querySelector(this.selectors.gameTime)
-        gameTimeElement.innerText = `00 : 00`
+        gameTimeElement.innerText = `00:00`
         gameTimeElement.style.display = 'flex'
+        const timer = document.querySelector(this.selectors.timerElement)
+        timer.style.display ='flex'
         const amountFlagsElement = document.querySelector(this.selectors.amountFlags)
         amountFlagsElement.style.display = 'flex'
         if (this.isPlaying){
@@ -405,7 +427,7 @@ class mineSweeperGame {
             this.allMines = 12;
             this.amountFlags = this.allMines
             gameField.classList.add("small");
-             amountFlagsElement.firstElementChild.innerText = this.amountFlags
+             amountFlagsElement.lastElementChild.innerText = this.amountFlags
             this.field(gameField);
         } else if (fieldSize == "20x16") {
             this.fieldRows = 16;
@@ -413,7 +435,7 @@ class mineSweeperGame {
             this.allMines = 48;
             this.amountFlags = this.allMines
             gameField.classList.add("middle");
-             amountFlagsElement.firstElementChild.innerText = this.amountFlags
+             amountFlagsElement.lastElementChild.innerText = this.amountFlags
             this.field(gameField);
         } else if (fieldSize == "30x24") {
             this.fieldRows = 24;
@@ -421,7 +443,7 @@ class mineSweeperGame {
             this.allMines = 144;
             this.amountFlags = this.allMines
             gameField.classList.add("big");
-             amountFlagsElement.firstElementChild.innerText = this.amountFlags
+             amountFlagsElement.lastElementChild.innerText = this.amountFlags
             this.field(gameField);
         }
     };
