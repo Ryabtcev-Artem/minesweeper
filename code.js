@@ -462,10 +462,24 @@ class mineSweeperGame {
              amountFlagsElement.lastElementChild.innerText = this.amountFlags
             this.field(gameField);
         } else if (fieldSize == "30x24") {
-            this.fieldRows = 24;
-            this.fieldCols = 30;
-            this.allMines = 144;
-            if (viewWidth){}
+            this.fieldRows = 20;
+            this.fieldCols = 26;
+            this.allMines = 100;
+            if (viewWidth<860){
+                this.fieldRows = 20
+                this.fieldCols = 20
+                this.allMines = 70
+            }
+            if (viewWidth<730){
+                this.fieldRows = 20;
+                this.fieldCols = 16;
+                this.allMines = 60
+            }
+            if (viewWidth<576){
+                this.fieldRows = 20
+                this.fieldCols = 12
+                this.allMines = 46
+            }
             gameField.style.gridTemplateColumns= `repeat(${this.fieldCols},1fr)`;
             gameField.style.gridTemplateRows = `repeat(${this.fieldRows},1fr)`;
             this.amountFlags = this.allMines

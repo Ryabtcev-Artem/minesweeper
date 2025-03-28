@@ -90,15 +90,15 @@ body{
 .big{
     margin: 0 auto;
     display: grid;
-    width:1000px;
-    height: 800px;
+    width: 900px;
+    height: 720px;
     grid-template-columns: repeat(30,1fr);
     grid-template-rows: repeat(24,1fr);
-    font-size: 24px;
+    font-size: 30px;
 }
 .big img{
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
 }
 
 .fieldCell{
@@ -189,10 +189,16 @@ option selected{
     .big{
         width:83vw;
         height: 66vw;
-        font-size: 22px;
     }
 }
 @media (max-width: 940px){
+    .big{
+        font-size: 26px;
+    }
+    .big img{
+        width: 26px;
+        height: 26px;
+    }
     .middle{
         width:83vw;
         height: 66vw;
@@ -245,7 +251,32 @@ option selected{
         height: 36px;
     }
 }
+@media (max-width:730px){
+    .big{
+        font-size: 30px;
+    }
+    .big img{
+        width: 30px;
+        height: 30px;
+    }
+}
+@media (max-width:650px){
+    .big{
+        font-size: 26px;
+    }
+    .big img{
+        width: 26px;
+        height: 26px;
+    }
+}
 @media (max-width: 576px){
+    .big{
+        font-size: 30px;
+    }
+    .big img{
+        width: 30px;
+        height: 30px;
+    }
     .middle{
         font-size: 32px;
     }
@@ -283,6 +314,13 @@ option selected{
     }
 }
 @media (max-width:490px){
+    .big{
+        font-size: 24px;
+    }
+    .big img{
+        width: 24px;
+        height: 24px;
+    }
     .small{
         font-size: 44px;
     }
