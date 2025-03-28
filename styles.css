@@ -247,11 +247,11 @@ option selected{
 }
 @media (max-width: 576px){
     .middle{
-        font-size: 34px;
+        font-size: 32px;
     }
     .middle img{
-        width: 34px;
-        height: 34px;
+        width: 32px;
+        height: 32px;
     }
     .small{
         font-size: 60px;

@@ -465,6 +465,9 @@ class mineSweeperGame {
             this.fieldRows = 24;
             this.fieldCols = 30;
             this.allMines = 144;
+            if (viewWidth){}
+            gameField.style.gridTemplateColumns= `repeat(${this.fieldCols},1fr)`;
+            gameField.style.gridTemplateRows = `repeat(${this.fieldRows},1fr)`;
             this.amountFlags = this.allMines
             gameField.classList.add("big");
              amountFlagsElement.lastElementChild.innerText = this.amountFlags
