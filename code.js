@@ -421,13 +421,24 @@ class mineSweeperGame {
         const fieldSize = document.querySelector(
             this.selectors.fieldSizeSelect
         ).value;
+        const viewWidth = window.innerWidth
         if (fieldSize == "10x8") {
             this.fieldRows = 8;
-            this.fieldCols = 10;
+            this.fieldCols = 10;    
+            if (viewWidth<800){
+                this.fieldRows = 10
+                this.fieldCols = 8
+            }
+            if (viewWidth<560){
+                this.fieldRows = 12
+                this.fieldCols = 6
+            }
             this.allMines = 12;
             this.amountFlags = this.allMines
             gameField.classList.add("small");
-             amountFlagsElement.lastElementChild.innerText = this.amountFlags
+            gameField.style.gridTemplateColumns= `repeat(${this.fieldCols},1fr)`;
+            gameField.style.gridTemplateRows = `repeat(${this.fieldRows},1fr)`;
+            amountFlagsElement.lastElementChild.innerText = this.amountFlags
             this.field(gameField);
         } else if (fieldSize == "20x16") {
             this.fieldRows = 16;
@@ -451,6 +462,11 @@ class mineSweeperGame {
         const startGameBtn = document.querySelector(
             this.selectors.startGameBtn
         );
+        const selectElement = document.querySelector(
+            this.selectors.fieldSizeSelect
+        )
+        this.startGame()
+        selectElement.addEventListener('input',()=>this.startGame())
         startGameBtn.addEventListener("click", () => this.startGame());
     };
 }
