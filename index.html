@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Сапер</title>
         <link rel="stylesheet" href="./styles.css" />
-        <link rel="icon" href="./images/bombIcon.svg" />
+        <link rel="icon" href="./svgs/bombIcon.svg" />
     </head>
     <body>
         <form id="userRules" onsubmit="return false" action="#">
@@ -20,7 +20,7 @@
                     <img
                         width="36"
                         height="36"
-                        src="./images/redFlag.svg"
+                        src="./svgs/redFlag.svg"
                         alt="amountFlags"
                     />
                     <span class="amountFlagsCount"></span>
@@ -29,7 +29,7 @@
                     <img
                         width="40"
                         height="40"
-                        src="./images/clock.svg"
+                        src="./svgs/clock.svg"
                         alt=""
                     />
                     <div class="gameTime"></div>
@@ -37,13 +37,11 @@
             </div>
         </form>
         <section class="gameField"></section>
-        <audio src="./images/gameOver.mp3" class="gameOverSound"></audio>
-        <audio src="./images/victory.mp3" class="gameVictorySound"></audio>
         <div class="reset hidden">
             <div class="questionEnd">
                 <button class="newGame">Сыграть ещё раз</button>
             </div>
         </div>
-        <script src="./code.js"></script>
+        <script src="./code.js" async></script>
     </body>
 </html>

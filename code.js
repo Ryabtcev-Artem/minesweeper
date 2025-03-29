@@ -1,10 +1,27 @@
 class mineSweeperGame {
+    audioCache = {};
     allCells = [];
     revealed = 0;
     allMines;
     amountFlags;
     isPlaying = false;
     timerInterval;
+    soundSelectors = {
+        victory: './sounds/victory.mp3',
+        wasted: './sounds/gameOver.mp3',
+        unhide1: './sounds/1unhide.wav',
+        unhide2: './sounds/2unhide.wav',
+        unhide3: './sounds/3unhide.wav',
+        unhide4: './sounds/4unhide.wav',
+        unhide5: './sounds/5unhide.wav',
+        unhide6: './sounds/6unhide.wav',
+        unhide7: './sounds/7unhide.wav',
+        unhide8: './sounds/8unhide.wav',
+        spawn: './sounds/spawn.wav',
+        pullFlag: './sounds/pullFlag.wav',
+        putFlag: './sounds/putFlag.wav',
+
+    }
     selectors = {
         startGameBtn: ".startGame",
         fieldSizeSelect: ".fieldSize",
@@ -23,6 +40,18 @@ class mineSweeperGame {
     constructor() {
         this.bindEvents();
     }
+    playSound = (src) => {
+        if (!this.audioCache[src]) {
+            this.audioCache[src] = new Audio(src);
+            this.audioCache[src].preload = 'auto'; 
+        }
+        const clone = this.audioCache[src].cloneNode();
+        clone.play();
+    
+        clone.addEventListener('ended', () => {
+        clone.remove(); // Удаляем после завершения
+    });
+    };
     setNums = () => {
         for (let row = 0; row < this.fieldRows; row++) {
             for (let col = 0; col < this.fieldCols; col++) {
@@ -111,10 +140,8 @@ class mineSweeperGame {
         setTimeout(()=>{this.startGame()},50)
     }
     gameLost=()=>{
-        let audio = document.querySelector(this.selectors.gameOverSound)
+        this.playSound(this.soundSelectors.wasted)
         clearInterval(this.timerInterval)
-        audio.volume = 0.5
-        audio.play()
         for (let row = 0; row < this.fieldRows; row++) {
             for (let col = 0; col < this.fieldCols; col++){
                 if (this.allCells[row][col].isMine){
@@ -131,20 +158,18 @@ class mineSweeperGame {
         const questionEnd = document.querySelector(this.selectors.questionEnd)
         let sadSapperImg = document.createElement('img')
         sadSapperImg.src = './images/sadSapper.jpg'
-
         questionEnd.prepend(sadSapperImg)
         resetWindow.style.display = 'flex'
         setTimeout(()=>{
         resetWindow.style.backgroundColor='rgba(0, 0, 0, 0.6)';
         questionEnd.style.opacity = '1'
-        },1000
+        },2000
         )
         const newGameBtn = document.querySelector(this.selectors.newGameBtn)
         newGameBtn.addEventListener('click',()=>this.newGame(),{once:true})
     }
     gameWon=()=>{
-        let audio = document.querySelector(this.selectors.gameVictorySound)
-        audio.play()
+        this.playSound(this.soundSelectors.victory)
         clearInterval(this.timerInterval)
         const resetWindow = document.querySelector(this.selectors.resetGame)
         const questionEnd = document.querySelector(this.selectors.questionEnd)
@@ -154,7 +179,7 @@ class mineSweeperGame {
         resetWindow.style.display = 'flex'
         setTimeout(()=>{
         resetWindow.style.backgroundColor='rgba(0, 0, 0, 0.6)';
-        questionEnd.style.opacity = '1'},1000)
+        questionEnd.style.opacity = '1'},2000)
         const newGameBtn = document.querySelector(this.selectors.newGameBtn)
         newGameBtn.addEventListener('click',()=>this.newGame(),{once:true})
     }
@@ -174,17 +199,20 @@ class mineSweeperGame {
             this.amountFlags++
             amountFlagsElement.lastElementChild.innerText = this.amountFlags
             this.allCells[currRow][currCol].element.removeChild(flag)
+            this.playSound(this.soundSelectors.pullFlag)
             return
         }if (this.amountFlags==0){return}
         this.amountFlags--
         amountFlagsElement.lastElementChild.innerText = this.amountFlags
         let img = document.createElement("img");
-        img.src = "./images/redFlag.svg";
+        img.src = "./svgs/redFlag.svg";
         img.classList.add('flag')
+        this.playSound(this.soundSelectors.putFlag)
         this.allCells[currRow][currCol].element.appendChild(img);
         this.allCells[currRow][currCol].isFlagged = true
     }
     startCheck = (event) => {
+        if (event.button ===2){return}
         const target = event.target.closest(".fieldCell");        
         if (!target) {
             return;
@@ -196,13 +224,20 @@ class mineSweeperGame {
         if (this.allCells[currRow][currCol].isMine) {
             this.gameLost()
             return
-        } 
-        target.firstElementChild.style.display = "flex";
+        }
+        const wrap = target.firstElementChild 
+        wrap.style.display = "flex";
+        this.createParticle(wrap)
         if (this.allCells[currRow][currCol].mineCount==0){
+            this.playSound(this.soundSelectors.spawn)
             this.removeExtraEmpty(currRow,currCol)
             return
         }
         const currCell = this.allCells[currRow][currCol];
+        console.log(`unhide${wrap.innerText}`);
+        
+        this.playSound(this.soundSelectors[`unhide${wrap.innerText}`])
+
         currCell.isRevealed = true;
         this.revealed++;
         if (this.revealed == (this.fieldRows*this.fieldCols - this.allMines)) {
@@ -231,12 +266,15 @@ class mineSweeperGame {
                         }                    
                         neighbour.isRevealed = true;
                         this.revealed++;
-                        neighbour.element.firstElementChild.style.display = "flex"; 
+                        const wrap = neighbour.element.firstElementChild
+                        wrap.style.display = "flex"; 
+                        this.createParticle(wrap)
                         if (this.revealed == this.fieldRows*this.fieldCols-this.allMines){
                             this.gameWon()
                         }                  
                         if (neighbour.mineCount == 0){
-                        this.removeExtraEmpty(newRow, newCol)}
+                        this.removeExtraEmpty(newRow, newCol)            
+                        }
                     }
                 }
             }
@@ -270,6 +308,9 @@ class mineSweeperGame {
         if (counterFlags<minesAround){
             return
         }
+        let maxNum = 1
+        let playNum = true
+        let playNumSound = false
         if (this.allCells[currRow][currCol].isFlagged){return}
         for (let row = -1; row <= 1; row++) {
             for (let col = -1; col <= 1; col++) {
@@ -287,18 +328,56 @@ class mineSweeperGame {
                         return
                     }
                     if (this.allCells[newRow][newCol].mineCount==0){
+                        this.playSound(this.soundSelectors.spawn)
                         this.removeExtraEmpty(newRow,newCol)
+                        playNum = false
                         continue
-                    }                                 
-                    this.allCells[newRow][newCol].element.firstElementChild.style.display = 'flex'
+                    }
+                    const wrap = this.allCells[newRow][newCol].element.firstElementChild                              
+                    wrap.style.display = 'flex'
+                    this.createParticle(wrap)
                     this.revealed++      
-                    this.allCells[newRow][newCol].isRevealed = true    
+                    this.allCells[newRow][newCol].isRevealed = true
+                    playNumSound = true
+                    if (maxNum<parseInt(wrap.innerText)){
+                        maxNum = parseInt(wrap.innerText)
+                        this.playSound(this.soundSelectors[`unhide${wrap.innerText}`])
+                    }
                     if (this.revealed==(this.fieldRows*this.fieldCols - this.allMines)){this.gameWon()}
                 }
             }
         }
+        if (playNum&&playNumSound){
+
+            this.playSound(this.soundSelectors[`unhide${maxNum}`])
+        }
+    }
+    createParticle = (element)=>{
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        element.appendChild(particle)
+        let randDeg30 = (Math.random()-0.5)*80
+        let randX30 = (Math.random()-0.5)*80
+        let randY30 = (Math.random()-0.5)*80
+        let randDeg70 = randDeg30*1.6
+        let randX70 = randX30*2.4
+        let randY70 = randY30*1.6
+        let randDeg100 = randDeg70*1.6
+        let randX100 = randX70*1.4
+        let randY100 = randY70*1.2
+        particle.style.setProperty('--randDeg30',`${randDeg30}deg`)
+        particle.style.setProperty('--randX30',`${randX30}px`)
+        particle.style.setProperty('--randY30',`${randY30}px`)
+        particle.style.setProperty('--randDeg70',`${randDeg70}deg`)
+        particle.style.setProperty('--randX70',`${randX70}px`)
+        particle.style.setProperty('--randY70',`${randY70}px`)
+        particle.style.setProperty('--randDeg100',`${randDeg100}deg`)
+        particle.style.setProperty('--randX100',`${randX100}px`)
+        particle.style.setProperty('--randY100',`${randY100}px`)
+        particle.addEventListener('animationend',()=>element.removeChild(particle),{once:true})
     }
     spawnBombs = (event) => {
+        if (event.button ===2){return}
         const target = event.target.closest(".fieldCell");
         if (!target) {
             return;
@@ -306,9 +385,12 @@ class mineSweeperGame {
         const startRow = parseInt(target.getAttribute("row"));
         const startCol = parseInt(target.getAttribute("col"));
         this.allCells[startRow][startCol].isRevealed = true;
-        this.allCells[startRow][
+
+        const wrap = this.allCells[startRow][
             startCol
-        ].element.firstElementChild.style.display = "flex";
+        ].element.firstElementChild
+
+        wrap.style.display = "flex";
         this.revealed++;
         let spawnedMines = 0;
         while (spawnedMines < this.allMines) {
@@ -322,7 +404,7 @@ class mineSweeperGame {
             } else {
                 this.allCells[randRow][randCol].isMine = true;
                 let img = document.createElement("img");
-                img.src = "./images/bomb.svg";
+                img.src = "./svgs/bomb.svg";
                 this.allCells[randRow][
                     randCol
                 ].element.firstElementChild.appendChild(img);
@@ -334,10 +416,12 @@ class mineSweeperGame {
             this.selectors.gameFieldElement
         );
         this.setNums();
+        this.createParticle(wrap)
+        this.playSound(this.soundSelectors.spawn)
         this.removeExtraEmpty(startRow, startCol);
         this.startGameTimer()
         gameField.addEventListener("dblclick", (event) => this.revealNeighbours(event));
-        gameField.addEventListener("click", (event) => this.startCheck(event));
+        gameField.addEventListener("pointerdown", (event) => this.startCheck(event));
         gameField.addEventListener("contextmenu", (event) => this.setRedFlag(event));
     };
     field = (gameField) => {
@@ -373,7 +457,7 @@ class mineSweeperGame {
             }
             this.allCells.push(rowArr);
         }
-        gameField.addEventListener("click", (event) => this.spawnBombs(event),{once:true});
+        gameField.addEventListener("pointerdown", (event) => this.spawnBombs(event),{once:true});
     };
     startGameTimer = ()=>{
         if (this.timerInterval){

@@ -1,30 +1,31 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     user-select: none;
 }
-:root{
+:root {
     --darkGreen: #4a752c;
     --darkerGreen: #3f6325;
-    --lightGreen:#aad751;
-    --littleDarkGreen:#a2d149;
-    --greenBorder:#87af3a;
-    --lightYellow:#e5c29f;
-    --darkYellow:#d7b899;
-    --black:#000;
-    --white:#fff;
+    --lightGreen: #aad751;
+    --littleDarkGreen: #a2d149;
+    --veryLightGreen: #bfe17d;
+    --greenBorder: #87af3a;
+    --lightYellow: #e5c29f;
+    --darkYellow: #d7b899;
+    --black: #000;
+    --white: #fff;
     --lighterGray: #e2e2e2;
 }
-button{
+button {
     border: none;
 }
-body{
+body {
     background-color: var(--darkGreen);
     color: var(--white);
-    font-family:sans-serif;
+    font-family: sans-serif;
 }
-#userRules{
+#userRules {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -35,10 +36,11 @@ body{
     padding-block: 20px;
     margin-bottom: 50px;
 }
-.startGame,.fieldSize{
+.startGame,
+.fieldSize {
     color: var(--black);
     outline: none;
-    transition: .3s ease;
+    transition: 0.3s ease;
     border: none;
     font-size: 20px;
     height: 50px;
@@ -46,68 +48,75 @@ body{
     border-radius: 4px;
     background-color: #ffffff;
 }
-.gameFields{
+.gameFields {
     display: flex;
     column-gap: 20px;
     justify-content: center;
     align-items: center;
 }
-.startGame:hover,.fieldSize:hover{
+.startGame:hover,
+.fieldSize:hover {
     background-color: var(--lighterGray);
 }
-.startGame{
+.startGame {
     width: 230px;
     padding-inline: 10px;
 }
-.fieldSize{
+.fieldSize {
     width: 250px;
 }
-.small{
+.small {
     margin: 0 auto;
     display: grid;
     font-size: 60px;
     width: 800px;
     height: 640px;
 }
-.small img{
+.small img {
     width: 70px;
     height: 70px;
 }
-.middle{
+.middle {
     margin: 0 auto;
     font-size: 30px;
     display: grid;
-    width:900px;
+    width: 900px;
     height: 720px;
     font-size: 40px;
-    grid-template-columns: repeat(20,1fr);
-    grid-template-rows: repeat(16,1fr);
+    grid-template-columns: repeat(20, 1fr);
+    grid-template-rows: repeat(16, 1fr);
 }
-.middle img{
+.middle img {
     width: 40px;
     height: 40px;
 }
-.big{
+.big {
     margin: 0 auto;
     display: grid;
     width: 900px;
     height: 720px;
-    grid-template-columns: repeat(30,1fr);
-    grid-template-rows: repeat(24,1fr);
+    grid-template-columns: repeat(30, 1fr);
+    grid-template-rows: repeat(24, 1fr);
     font-size: 30px;
 }
-.big img{
+.big img {
     width: 30px;
     height: 30px;
 }
 
-.fieldCell{
+.fieldCell {
     aspect-ratio: 1/1;
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: background-color 0.3s ease;
+    position: relative;
 }
-.wrap{
+.fieldCell:hover {
+    filter: brightness(1.1);
+}
+
+.wrap {
     background-color: var(--lightGreen);
     width: 100%;
     font-weight: 700;
@@ -116,7 +125,7 @@ body{
     height: 100%;
     display: none;
 }
-.reset{
+.reset {
     transition: 2s ease;
     display: none;
     position: absolute;
@@ -127,7 +136,7 @@ body{
     top: 0;
     left: 0;
 }
-.questionEnd{
+.questionEnd {
     transition: 2s ease;
     opacity: 0;
     display: flex;
@@ -137,13 +146,13 @@ body{
     justify-content: center;
     row-gap: 10px;
 }
-.questionEnd img{
+.questionEnd img {
     width: 350px;
     height: 350px;
     border-radius: 20px;
 }
-.newGame{
-    transition: .3s ease;
+.newGame {
+    transition: 0.3s ease;
     font-size: 30px;
     width: 100%;
     height: 70px;
@@ -153,189 +162,235 @@ body{
     border-radius: 6px;
     color: var(--white);
 }
-.newGame:hover{
+.newGame:hover {
     background-color: var(--greenBorder);
 }
-.one { color: blue; }
-.two { color: green; }
-.three { color: red; }
-.four { color: darkblue; }
-.five { color: maroon; }
-.six { color: rgb(51, 185, 172); }
-.seven { color: black; }
-.eight { color: gray; }
-.gameTime{
+.one {
+    color: blue;
+}
+.two {
+    color: green;
+}
+.three {
+    color: red;
+}
+.four {
+    color: darkblue;
+}
+.five {
+    color: maroon;
+}
+.six {
+    color: rgb(51, 185, 172);
+}
+.seven {
+    color: black;
+}
+.eight {
+    color: gray;
+}
+.gameTime {
     display: none;
     align-items: center;
     justify-content: center;
 }
-option selected{
+option selected {
     background-color: black;
 }
-.timer{
+.timer {
     display: none;
     align-items: center;
     column-gap: 10px;
 }
-.amountFlags{
-    display:none;
+.amountFlags {
+    display: none;
     align-items: center;
     justify-content: center;
     color: var(--white);
     height: 40px;
     width: 80px;
 }
+.particle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #aad751;
+    border-radius: 2px;
+    pointer-events: none;
+    animation: particle-fly 0.8s linear;
+}
+
+@keyframes particle-fly {
+    0% {
+        transform: rotate(0) scale(1);
+        opacity: 1;
+    }
+    30% {
+        transform: rotate(var(--randDeg30))
+            translate(var(--randX30), var(--randY30)) scale(0.7);
+    }
+    70% {
+        transform: rotate(var(--randDeg70))
+            translate(var(--randX70), var(--randY70)) scale(0.3);
+    }
+    100% {
+        transform: rotate(var(--randDeg100))
+            translate(var(--randX100), var(--randY100)) scale(0.1);
+    }
+}
+
+
 @media (max-width: 1080px) {
-    .big{
-        width:83vw;
+    .big {
+        width: 83vw;
         height: 66vw;
     }
 }
-@media (max-width: 940px){
-    .big{
+@media (max-width: 940px) {
+    .big {
         font-size: 26px;
     }
-    .big img{
+    .big img {
         width: 26px;
         height: 26px;
     }
-    .middle{
-        width:83vw;
+    .middle {
+        width: 83vw;
         height: 66vw;
         font-size: 32px;
     }
-    .middle img{
+    .middle img {
         width: 32px;
         height: 32px;
     }
 }
-@media (max-width: 860px){
-    .small{
-        width:83vw;
+@media (max-width: 860px) {
+    .small {
+        width: 83vw;
         height: 66vw;
         font-size: 50px;
     }
-    .small img{
+    .small img {
         width: 50px;
         height: 50px;
     }
-    .startGame{
+    .startGame {
         display: none;
     }
-    #userRules{
+    #userRules {
         margin-bottom: 25px;
     }
 }
-@media (max-width:790px){
-    .middle{
+@media (max-width: 790px) {
+    .middle {
         font-size: 38px;
     }
-    .middle img{
+    .middle img {
         width: 38px;
         height: 38px;
     }
 }
-@media (max-width:750px){
-    .small{
+@media (max-width: 750px) {
+    .small {
         font-size: 42px;
     }
-    .small img{
+    .small img {
         width: 44px;
         height: 44px;
     }
-    .middle{
+    .middle {
         font-size: 36px;
     }
-    .middle img{
+    .middle img {
         width: 36px;
         height: 36px;
     }
 }
-@media (max-width:730px){
-    .big{
+@media (max-width: 730px) {
+    .big {
         font-size: 30px;
     }
-    .big img{
+    .big img {
         width: 30px;
         height: 30px;
     }
 }
-@media (max-width:650px){
-    .big{
+@media (max-width: 650px) {
+    .big {
         font-size: 26px;
     }
-    .big img{
+    .big img {
         width: 26px;
         height: 26px;
     }
 }
-@media (max-width: 576px){
-    .big{
+@media (max-width: 576px) {
+    .big {
         font-size: 30px;
     }
-    .big img{
+    .big img {
         width: 30px;
         height: 30px;
     }
-    .middle{
+    .middle {
         font-size: 32px;
     }
-    .middle img{
+    .middle img {
         width: 32px;
         height: 32px;
     }
-    .small{
+    .small {
         font-size: 60px;
     }
-    .small img{
+    .small img {
         width: 60px;
         height: 60px;
     }
-    .fieldSize{
+    .fieldSize {
         width: 140px;
         height: 35px;
     }
-    #userRules{
+    #userRules {
         font-size: 20px;
         column-gap: 5px;
         justify-content: space-around;
         margin-bottom: 25px;
         padding-block: 10px;
     }
-    .gameFields{
+    .gameFields {
         column-gap: 6px;
     }
-    .timer{
+    .timer {
         column-gap: 2px;
     }
-    .timer img{
+    .timer img {
         width: 30px;
         height: 30px;
     }
 }
-@media (max-width:490px){
-    .big{
+@media (max-width: 490px) {
+    .big {
         font-size: 24px;
     }
-    .big img{
+    .big img {
         width: 24px;
         height: 24px;
     }
-    .small{
+    .small {
         font-size: 44px;
     }
-    .small img{
+    .small img {
         width: 44px;
         height: 44px;
     }
-    .fieldSize{
+    .fieldSize {
         width: 140px;
         height: 35px;
     }
-    .middle{
+    .middle {
         font-size: 30px;
     }
-    .middle img{
+    .middle img {
         width: 30px;
         height: 30px;
     }
