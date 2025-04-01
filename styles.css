@@ -38,8 +38,8 @@ body {
 }
 .redFlagBtn {
     position: absolute;
-    width: 6vh;
-    height: 6vh;
+    width: 8vh;
+    height: 8vh;
     z-index: 2;
     border-radius: 50%;
     background-color: var(--darkerGreen);
@@ -49,16 +49,16 @@ body {
 }
 .shovelBtn {
     position: absolute;
-    width: 6vh;
-    height: 6vh;
+    width: 8vh;
+    height: 8vh;
     z-index: 2;
     border-radius: 50%;
     background-color: var(--darkerGreen);
 }
 .cancelBtn {
     position: absolute;
-    width: 4vh;
-    height: 4vh;
+    width: 5vh;
+    height: 5vh;
     z-index: 2;
     border-radius: 50%;
     background-color: var(--darkerGreen);

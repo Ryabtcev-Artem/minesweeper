@@ -170,11 +170,13 @@ class mineSweeperGame {
         const resetWindow = document.querySelector(this.selectors.resetGame);
         resetWindow.style.display = "flex";
         if (this.isTouchDevice) {
-            resetWindow.addEventListener("touchstart", this.showTouchLost,{passive:false});
+            resetWindow.addEventListener("touchstart", this.showTouchLost,{passive:false},{once:true});
         }
+        else{
         resetWindow.addEventListener("dblclick", this.showLostEnd, {
             once: true,
         });
+        }
         let minesWithDistance = [];
         clearInterval(this.timerInterval);
         for (let [row, col] of this.minesPositions) {
@@ -431,7 +433,9 @@ class mineSweeperGame {
         if (this.isTouchDevice) {
             resetWindow.addEventListener("touchstart", this.showTouchWin,{passive:false});
         }
-        resetWindow.addEventListener("dblclick", this.gameWon, { once: true });
+        else{
+            resetWindow.addEventListener("dblclick", this.gameWon, { once: true })
+        };
         resetWindow.style.display = "flex";
         clearInterval(this.timerInterval);
         this.playSound(this.soundSelectors.winChime);
@@ -695,6 +699,7 @@ class mineSweeperGame {
         if (!fieldCell.isRevealed || fieldCell.mineCount == 0) {
             return false;
         }
+        let allAvailableCells = 0
         const minesAround = fieldCell.mineCount;
         let counterFlags = 0;
         for (let row = -1; row <= 1; row++) {
@@ -707,6 +712,7 @@ class mineSweeperGame {
                     newCol >= 0 &&
                     newCol < this.fieldCols
                 ) {
+                    allAvailableCells++
                     const fieldCell = this.allCells[newRow][newCol]
                     if (fieldCell.isRevealed){
                         revealedNeighbours++
@@ -718,7 +724,7 @@ class mineSweeperGame {
             }
         } 
         
-        if ((counterFlags < minesAround) || ((9-revealedNeighbours-minesAround)==0)) {
+        if ((counterFlags < minesAround) || ((allAvailableCells-revealedNeighbours-minesAround)==0)) {
             return false;
         }
         return true;
