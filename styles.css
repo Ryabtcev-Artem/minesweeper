@@ -177,8 +177,8 @@ body {
     row-gap: 10px;
 }
 .questionEnd img {
-    width: 350px;
-    height: 350px;
+    width: clamp(200px,350px,400px);
+    height: auto;
     border-radius: 20px;
 }
 .newGame {
