@@ -61,7 +61,6 @@ class mineSweeperGame {
     }
     phoneDblClick = () => {
         const currTap = new Date();
-        console.log(currTap - this.lastTap);
         if (currTap - this.lastTap > 300) {
             this.lastTap = currTap;
             return false;
@@ -131,6 +130,8 @@ class mineSweeperGame {
             this.selectors.gameFieldElement
         );
         const resetWindow = document.querySelector(this.selectors.resetGame);
+        resetWindow.removeEventListener('touchstart',this.showTouchLost)
+        resetWindow.removeEventListener('touchstart',this.showTouchWin)
         const questionEnd = document.querySelector(this.selectors.questionEnd);
         const questionEndImg = questionEnd.querySelector("img");
         if (questionEndImg) {
@@ -169,7 +170,7 @@ class mineSweeperGame {
         const resetWindow = document.querySelector(this.selectors.resetGame);
         resetWindow.style.display = "flex";
         if (this.isTouchDevice) {
-            resetWindow.addEventListener("touchstart", this.showTouchLost);
+            resetWindow.addEventListener("touchstart", this.showTouchLost,{passive:false});
         }
         resetWindow.addEventListener("dblclick", this.showLostEnd, {
             once: true,
@@ -427,7 +428,7 @@ class mineSweeperGame {
     wonAnimation = () => {
         const resetWindow = document.querySelector(this.selectors.resetGame);
         if (this.isTouchDevice) {
-            resetWindow.addEventListener("touchstart", this.showTouchWin);
+            resetWindow.addEventListener("touchstart", this.showTouchWin,{passive:false});
         }
         resetWindow.addEventListener("dblclick", this.gameWon, { once: true });
         resetWindow.style.display = "flex";
@@ -685,7 +686,7 @@ class mineSweeperGame {
         if (!target) {
             return false;
         }
-
+        let revealedNeighbours =0
         const currRow = parseInt(target.getAttribute("row"));
         const currCol = parseInt(target.getAttribute("col"));
         const fieldCell = this.allCells[currRow][currCol];
@@ -704,13 +705,18 @@ class mineSweeperGame {
                     newCol >= 0 &&
                     newCol < this.fieldCols
                 ) {
-                    if (this.allCells[newRow][newCol].isFlagged) {
+                    const fieldCell = this.allCells[newRow][newCol]
+                    if (fieldCell.isRevealed){
+                        revealedNeighbours++
+                    }
+                    if (fieldCell.isFlagged) {
                         counterFlags++;
                     }
                 }
             }
-        }
-        if (counterFlags < minesAround) {
+        } 
+        
+        if ((counterFlags < minesAround) || ((9-revealedNeighbours-minesAround)==0)) {
             return false;
         }
         return true;
@@ -839,6 +845,18 @@ class mineSweeperGame {
             gameField.classList.remove("trig");
         });
     };
+    // showHover = (event)=>{
+    //     const target = event.target.closest(".fieldCell");
+    //     const eve = event
+    //     if (!target) {
+    //         return;
+    //     }
+    //     const fieldCell = target.element
+    //     const hoverAble = this.checkNeighbours()
+    //     if (!fieldCell.isRevealed || hoverAble){
+    //     }
+
+    // }
     removeTouchButtons = () => {
         if (this.focusedCell) {
             this.focusedCell.classList.remove("focusedCell");
@@ -850,6 +868,18 @@ class mineSweeperGame {
             this.touchButtons = [];
         }
     };
+    revealDblNeighbours = (event)=>{
+        const target = event.target.closest(".fieldCell");
+        const eve = event
+        if (!target) {
+            return;
+        }
+        if (this.phoneDblClick()){
+            this.removeTouchButtons()
+            this.revealNeighbours(eve)
+            target.removeEventListener('touchstart',this.revealDblNeighbours)
+        }
+    }
     showTouchMenu = (event) => {
         const eve = event;
         const target = event.target.closest(".fieldCell");
@@ -875,28 +905,52 @@ class mineSweeperGame {
         const cancelBtn = document.createElement("img");
         cancelBtn.src = "./svgs/cancel.svg";
         cancelBtn.classList.add("cancelBtn");
-        const coordsCancelBtn = cancelBtn.getBoundingClientRect();
         cancelBtn.addEventListener("pointerdown", this.removeTouchButtons);
-        if (fieldCell.isRevealed && neighbourCan) {
+        const additionalMore = 8*this.explosionFieldSize
+        const additionalLess = 4*this.explosionFieldSize
+        if (fieldCell.isFlagged){
+            redFlagBtn.addEventListener("pointerdown", () => {
+                this.removeTouchButtons();
+                this.setRedFlag(eve);
+            });
+            this.touchButtons.push(redFlagBtn)
+            this.touchButtons.push(cancelBtn)
+            fieldCell.element.appendChild(cancelBtn);
+            fieldCell.element.appendChild(redFlagBtn);
+            const coordsFlagBtn = redFlagBtn.getBoundingClientRect();
+            redFlagBtn.style.transform = `translateX(${-(coordsFlagBtn.height + additionalMore)}px)`;
+            cancelBtn.style.transform = `translate(${-(coordsFlagBtn.height - additionalLess)}px, ${-(coordsFlagBtn.height - additionalLess)}px)`;
+            if (startRow == 0) {
+                cancelBtn.style.transform = `translate(${-(coordsFlagBtn.height - additionalLess)}px, ${coordsFlagBtn.height - additionalLess}px)`; // Слева внизу
+            }
+            if (startCol == 0) {
+                redFlagBtn.style.transform = `translateX(${coordsFlagBtn.height + additionalLess}px)`;
+                cancelBtn.style.transform = `translate(${coordsFlagBtn.height - additionalLess}px, ${-(coordsFlagBtn.height - additionalLess)}px)`;
+            }
+            if (startRow ==0 && startCol==0){
+                cancelBtn.style.transform = `translate(${coordsFlagBtn.height - additionalMore}px, ${(coordsFlagBtn.height - additionalLess)}px)`;
+            }
+        }
+        else if (fieldCell.isRevealed && neighbourCan) {
             shovelBtn.addEventListener("pointerdown", () => {
                 this.removeTouchButtons();
                 this.revealNeighbours(eve);
             });
+            fieldCell.element.addEventListener('touchstart',this.revealDblNeighbours,{passive:true})
             this.touchButtons.push(cancelBtn);
             this.touchButtons.push(shovelBtn);
             fieldCell.element.appendChild(cancelBtn);
             fieldCell.element.appendChild(shovelBtn);
             redFlagBtn.remove();
             const coordsShovelBtn = shovelBtn.getBoundingClientRect();
-            shovelBtn.style.top = -(coordsShovelBtn.height + 12) + "px";
-            cancelBtn.style.top = -(coordsShovelBtn.height - 6) + "px";
-            cancelBtn.style.left = -(coordsShovelBtn.height - 6) + "px";
+            shovelBtn.style.transform = `translateY(${-(coordsShovelBtn.height + additionalMore)}px)`;
+            cancelBtn.style.transform = `translate(${-(coordsShovelBtn.height - additionalLess)}px, ${-(coordsShovelBtn.height - additionalLess)}px)`; 
             if (startRow == 0) {
-                shovelBtn.style.top = coordsShovelBtn.height + 6 + "px";
-                cancelBtn.style.top = coordsShovelBtn.height + 6 + "px";
+                shovelBtn.style.transform = `translateY(${coordsShovelBtn.height + additionalLess}px)`;
+                cancelBtn.style.transform = `translate(${-(coordsShovelBtn.height - additionalLess)}px, ${coordsShovelBtn.height - additionalLess}px)`;
             }
             if (startCol == 0) {
-                cancelBtn.style.left = coordsShovelBtn.height + 6 + "px";
+                cancelBtn.style.transform = `translate(${coordsShovelBtn.height + additionalLess}px, ${-(coordsShovelBtn.height - additionalLess)}px)`;
             }
         } else {
             redFlagBtn.addEventListener("pointerdown", () => {
@@ -915,17 +969,20 @@ class mineSweeperGame {
             fieldCell.element.appendChild(redFlagBtn);
             const coordsShovelBtn = shovelBtn.getBoundingClientRect();
             const coordsFlagBtn = redFlagBtn.getBoundingClientRect();
-            shovelBtn.style.top = -(coordsShovelBtn.height +12) + 'px'
-            redFlagBtn.style.left = -(coordsFlagBtn.height+12) +'px'
-            cancelBtn.style.top = -(coordsFlagBtn.height-6) +'px'
-            cancelBtn.style.left = -(coordsFlagBtn.height-6) +'px'
+            shovelBtn.style.transform = `translateY(${-(coordsShovelBtn.height + additionalMore)}px)`;
+            redFlagBtn.style.transform = `translateX(${-(coordsFlagBtn.height + additionalMore)}px)`;
+            cancelBtn.style.transform = `translate(${-(coordsFlagBtn.height - additionalLess)}px, ${-(coordsFlagBtn.height - additionalLess)}px)`;
             if (startRow == 0) {
-                shovelBtn.style.top = (coordsShovelBtn.height +6) + 'px'
-                cancelBtn.style.top = (coordsShovelBtn.height +6) + 'px'
+                shovelBtn.style.transform = `translateY(${coordsShovelBtn.height + additionalLess}px)`;
+                redFlagBtn.style.transform = `translateX(${-(coordsFlagBtn.height + additionalMore)}px)`;
+                cancelBtn.style.transform = `translate(${-(coordsFlagBtn.height - additionalLess)}px, ${coordsFlagBtn.height - additionalLess}px)`; // Слева внизу
             }
             if (startCol == 0) {
-                redFlagBtn.style.left = (coordsFlagBtn.height+6) +'px'
-                cancelBtn.style.left = (coordsFlagBtn.height+6) +'px'
+                redFlagBtn.style.transform = `translateX(${coordsFlagBtn.height + additionalLess}px)`;
+                cancelBtn.style.transform = `translate(${coordsFlagBtn.height - additionalLess}px, ${-(coordsFlagBtn.height - additionalLess)}px)`; // Справа вверху
+            }
+            if (startRow ==0 && startCol==0){
+                cancelBtn.style.transform = `translate(${coordsFlagBtn.height - additionalLess}px, ${(coordsFlagBtn.height - additionalLess)}px)`;
             }
         }
     };
@@ -1025,6 +1082,12 @@ class mineSweeperGame {
             (event) => this.spawnBombs(event),
             { once: true }
         );
+        // gameField.addEventListener(
+        //     'mouseover',
+        //     (event)=>{
+        //         this.showHover(event)
+        //     }
+        // )
     };
     startGameTimer = () => {
         if (this.timerInterval) {

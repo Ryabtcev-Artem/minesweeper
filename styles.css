@@ -36,29 +36,29 @@ body {
     padding-block: 20px;
     margin-bottom: 50px;
 }
-.redFlagBtn{
+.redFlagBtn {
     position: absolute;
-    width: 12vw;
-    height: 12vw;
+    width: 6vh;
+    height: 6vh;
     z-index: 2;
     border-radius: 50%;
     background-color: var(--darkerGreen);
 }
-.focusedCell{
+.focusedCell {
     border: 6px solid var(--darkGreen);
 }
-.shovelBtn{
+.shovelBtn {
     position: absolute;
-    width: 12vw;
-    height: 12vw;
+    width: 6vh;
+    height: 6vh;
     z-index: 2;
     border-radius: 50%;
     background-color: var(--darkerGreen);
 }
-.cancelBtn{
+.cancelBtn {
     position: absolute;
-    width: 8vw;
-    height: 8vw;
+    width: 4vh;
+    height: 4vh;
     z-index: 2;
     border-radius: 50%;
     background-color: var(--darkerGreen);
@@ -123,23 +123,26 @@ body {
 
 .fieldCell {
     aspect-ratio: 1/1;
-    
+
     display: flex;
     justify-content: center;
     align-items: center;
     transition: background-color 0.3s ease;
     position: relative;
 }
-.fieldCell:hover::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.15); /* Белый полупрозрачный слой */
-    pointer-events: none; /* Чтобы не блокировал клики */
+@media (hover:hover){
+    .fieldCell:hover::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.15);
+        pointer-events: none;
+    }
 }
+
 
 .wrap {
     background-color: var(--lightGreen);
@@ -788,19 +791,27 @@ option selected {
 .trig {
     animation: shake 0.3s linear;
     transform-origin: center;
-  }
-  
-  @keyframes shake {
-    0%, 100% {
-      transform: translate(0, 0) rotate(0);
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0);
     }
-    10%, 30%, 50%, 70%, 90% {
-      transform: translate(-2px, -3px) rotate(-1deg);
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translate(-2px, -3px) rotate(-1deg);
     }
-    20%, 40%, 60%, 80% {
-      transform: translate(2px, 3px) rotate(1deg);
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translate(2px, 3px) rotate(1deg);
     }
-  }
+}
 /*Анимация флага*/
 .flag {
     position: absolute;
@@ -835,7 +846,7 @@ option selected {
     }
 }
 .fly1 {
-    animation: flying1 .6s linear;
+    animation: flying1 0.6s linear;
 }
 @keyframes flying1 {
     0% {
@@ -845,35 +856,35 @@ option selected {
         top: 50%;
     }
     5% {
-        left: 67%;  /* +17% (было +17% от 5% до 22%) */
-        top: 27%;   /* -23% (было -28% от 5% до -23%) */
+        left: 67%; /* +17% (было +17% от 5% до 22%) */
+        top: 27%; /* -23% (было -28% от 5% до -23%) */
         rotate: 35deg;
     }
     40% {
         rotate: 90deg;
         left: 100%; /* +50% (было +50% от 5% до 55%) */
-        top: -27%;  /* -77% (было -82% от 5% до -77%) */
+        top: -27%; /* -77% (было -82% от 5% до -77%) */
     }
     57% {
         rotate: 120deg;
         left: 117%; /* +67% (было +67% от 5% до 72%) */
-        top: -35%;  /* -85% (было -90% от 5% до -85%) */
+        top: -35%; /* -85% (было -90% от 5% до -85%) */
     }
     78% {
         rotate: 160deg;
         left: 138%; /* +88% (было +88% от 5% до 93%) */
-        top: -27%;  /* -77% */
+        top: -27%; /* -77% */
     }
     100% {
         rotate: 190deg;
         scale: 0;
         left: 160%; /* +110% (было +110% от 5% до 115%) */
-        top: 65%;   /* +15% (было +10% от 5% до 15%) */
+        top: 65%; /* +15% (было +10% от 5% до 15%) */
     }
 }
 
 .fly2 {
-    animation: flying2 .6s linear;
+    animation: flying2 0.6s linear;
 }
 @keyframes flying2 {
     0% {
@@ -883,35 +894,35 @@ option selected {
         top: 50%;
     }
     5% {
-        left: 53%;  /* +3% (было +3% от 5% до 8%) */
-        top: 27%;   /* -23% */
+        left: 53%; /* +3% (было +3% от 5% до 8%) */
+        top: 27%; /* -23% */
         rotate: -35deg;
     }
     40% {
         rotate: -90deg;
-        left: 25%;  /* -25% (было -30% от 5% до -25%) */
-        top: -27%;  /* -77% */
+        left: 25%; /* -25% (было -30% от 5% до -25%) */
+        top: -27%; /* -77% */
     }
     57% {
         rotate: -120deg;
-        left: 8%;   /* -42% (было -47% от 5% до -42%) */
-        top: -35%;  /* -85% */
+        left: 8%; /* -42% (было -47% от 5% до -42%) */
+        top: -35%; /* -85% */
     }
     78% {
         rotate: -160deg;
         left: -13%; /* -63% (было -68% от 5% до -63%) */
-        top: -27%;  /* -77% */
+        top: -27%; /* -77% */
     }
     100% {
         rotate: -190deg;
         scale: 0;
         left: -35%; /* -85% (было -90% от 5% до -85%) */
-        top: 65%;   /* +15% */
+        top: 65%; /* +15% */
     }
 }
 
 .fly3 {
-    animation: flying3 .6s linear;
+    animation: flying3 0.6s linear;
 }
 @keyframes flying3 {
     0% {
@@ -921,35 +932,35 @@ option selected {
         top: 50%;
     }
     5% {
-        left: 75%;  /* +25% (было +25% от 5% до 30%) */
-        top: 60%;   /* +10% (было +5% от 5% до 10%) */
+        left: 75%; /* +25% (было +25% от 5% до 30%) */
+        top: 60%; /* +10% (было +5% от 5% до 10%) */
         rotate: 35deg;
     }
     40% {
         rotate: 90deg;
         left: 120%; /* +70% (было +70% от 5% до 75%) */
-        top: 50%;   /* 0% (было -5% от 5% до 0%) */
+        top: 50%; /* 0% (было -5% от 5% до 0%) */
     }
     57% {
         rotate: 120deg;
         left: 137%; /* +87% (было +87% от 5% до 92%) */
-        top: 60%;   /* +10% */
+        top: 60%; /* +10% */
     }
     78% {
         rotate: 160deg;
         left: 158%; /* +108% (было +108% от 5% до 113%) */
-        top: 80%;   /* +30% (было +25% от 5% до 30%) */
+        top: 80%; /* +30% (было +25% от 5% до 30%) */
     }
     100% {
         rotate: 190deg;
         scale: 0;
         left: 180%; /* +130% (было +130% от 5% до 135%) */
-        top: 120%;  /* +70% (было +65% от 5% до 70%) */
+        top: 120%; /* +70% (было +65% от 5% до 70%) */
     }
 }
 
 .fly4 {
-    animation: flying4 .6s linear;
+    animation: flying4 0.6s linear;
 }
 @keyframes flying4 {
     0% {
@@ -959,29 +970,29 @@ option selected {
         top: 50%;
     }
     5% {
-        left: 50%;  /* 0 (было -5% от 5% до 0%) */
-        top: 60%;   /* +10% */
+        left: 50%; /* 0 (было -5% от 5% до 0%) */
+        top: 60%; /* +10% */
         rotate: -35deg;
     }
     40% {
         rotate: -90deg;
-        left: 5%;   /* -45% (было -50% от 5% до -45%) */
-        top: 50%;   /* 0% */
+        left: 5%; /* -45% (было -50% от 5% до -45%) */
+        top: 50%; /* 0% */
     }
     57% {
         rotate: -120deg;
         left: -12%; /* -62% (было -67% от 5% до -62%) */
-        top: 60%;   /* +10% */
+        top: 60%; /* +10% */
     }
     78% {
         rotate: -160deg;
         left: -33%; /* -83% (было -88% от 5% до -83%) */
-        top: 80%;   /* +30% */
+        top: 80%; /* +30% */
     }
     100% {
         rotate: -190deg;
         scale: 0;
         left: -55%; /* -105% (было -110% от 5% до -105%) */
-        top: 120%;  /* +70% */
+        top: 120%; /* +70% */
     }
 }
