@@ -2,10 +2,14 @@ class mineSweeperGame {
     audioCache = {};
     allCells = [];
     gameWonTimeOut;
-    isTouchDevice = 'ontouchstart' in window || 
-                     navigator.maxTouchPoints > 0 || 
-                     navigator.msMaxTouchPoints > 0;
+    isTouchDevice =
+        ("ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        navigator.msMaxTouchPoints > 0);
+    lastTap = new Date();
     revealed = 0;
+    focusedCell;
+    touchButtons = [];
     explosionFieldSize = 1;
     allMines;
     playVolume = true;
@@ -54,6 +58,15 @@ class mineSweeperGame {
     fieldCols;
     constructor() {
         this.bindEvents();
+    }
+    phoneDblClick = ()=>{
+        const currTap = new Date()
+        console.log(currTap - this.lastTap);   
+        if ((currTap - this.lastTap)>300){
+            this.lastTap = currTap
+            return false
+        }
+        return true
     }
     setNums = () => {
         for (let row = 0; row < this.fieldRows; row++) {
@@ -132,20 +145,31 @@ class mineSweeperGame {
         (questionEnd.style.opacity = "0"),
             gameField.replaceWith(gameField.cloneNode(true));
         setTimeout(() => {
-            this.stopAllSounds()
-            this.startGame();    
+            this.stopAllSounds();
+            this.startGame();
         }, 50);
     };
-    stopAllSounds=()=>{
-        for (let audio of this.playingSounds){
-            audio.pause()
-            audio.remove()
+    stopAllSounds = () => {
+        for (let audio of this.playingSounds) {
+            audio.pause();
+            audio.remove();
+        }
+    };
+    showTouchLost = ()=>{
+        if (this.phoneDblClick()){
+            this.showLostEnd()
+            const resetWindow = document.querySelector(this.selectors.resetGame);
+            resetWindow.removeEventListener('touchstart',this.showTouchLost)
         }
     }
     lostExplosion = (currRow, currCol) => {
-        this.trigger()
+        this.trigger();
         const resetWindow = document.querySelector(this.selectors.resetGame);
         resetWindow.style.display = "flex";
+        if (this.isTouchDevice){
+            resetWindow.addEventListener('touchstart',this.showTouchLost)
+            
+        }
         resetWindow.addEventListener("dblclick", this.showLostEnd, {
             once: true,
         });
@@ -168,7 +192,7 @@ class mineSweeperGame {
                     this.allCells[mine.row][mine.col].element.firstElementChild;
                 if (this.playVolume) {
                     const randBoom = Math.ceil(Math.random() * 5);
-                    this.playSound(this.soundSelectors[`boom${randBoom}`])
+                    this.playSound(this.soundSelectors[`boom${randBoom}`]);
                 }
                 wrap.style.display = "flex";
                 this.explosionAnimation(wrap);
@@ -180,7 +204,7 @@ class mineSweeperGame {
                         "dblclick",
                         this.showLostEnd
                     );
-                    setTimeout(()=>this.showLostEnd(),1000);
+                    setTimeout(() => this.showLostEnd(), 1000);
                 }
             }, (index + 1) * 350 * (1 + Math.random() * 0.05));
             this.explosionTimers.push(timerId);
@@ -189,7 +213,7 @@ class mineSweeperGame {
     showLostEnd = () => {
         const resetWindow = document.querySelector(this.selectors.resetGame);
         this.playVolume = false;
-        this.playSound(this.soundSelectors.wasted)
+        this.playSound(this.soundSelectors.wasted);
         const questionEnd = document.querySelector(this.selectors.questionEnd);
         let sadSapperImg = document.createElement("img");
         sadSapperImg.src = "./images/sadSapper.jpg";
@@ -197,7 +221,9 @@ class mineSweeperGame {
         setTimeout(() => {
             resetWindow.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
             questionEnd.style.opacity = "1";
-            const newGameBtn = document.querySelector(this.selectors.newGameBtn);
+            const newGameBtn = document.querySelector(
+                this.selectors.newGameBtn
+            );
             newGameBtn.addEventListener("click", () => this.newGame(), {
                 once: true,
             });
@@ -388,13 +414,22 @@ class mineSweeperGame {
 
         fieldCell.appendChild(flowersContainer);
     };
-
+    showTouchWin = ()=>{
+        if (this.phoneDblClick()){
+            this.gameWon()
+            const resetWindow = document.querySelector(this.selectors.resetGame);
+            resetWindow.removeEventListener('touchstart',this.showTouchWin)
+        }
+    }
     wonAnimation = () => {
         const resetWindow = document.querySelector(this.selectors.resetGame);
-        resetWindow.addEventListener('dblclick',this.gameWon,{once:true})
+        if (this.isTouchDevice){
+            resetWindow.addEventListener('touchstart',this.showTouchWin)
+        }
+        resetWindow.addEventListener("dblclick", this.gameWon, { once: true });
         resetWindow.style.display = "flex";
         clearInterval(this.timerInterval);
-        this.playSound(this.soundSelectors.winChime)
+        this.playSound(this.soundSelectors.winChime);
         for (let row = 0; row < this.fieldRows; row++) {
             for (let col = 0; col < this.fieldCols; col++) {
                 const fieldCell = this.allCells[row][col];
@@ -418,7 +453,7 @@ class mineSweeperGame {
                             wrap.style.color = "transparent";
                         }, 10);
                     } else {
-                         const timerId = setTimeout(() => {
+                        const timerId = setTimeout(() => {
                             wrap.style.backgroundColor = "#85b9e4";
                             wrap.style.color = "transparent";
                         }, 10);
@@ -426,23 +461,25 @@ class mineSweeperGame {
                 }
             }
         }
-        this.gameWonTimeOut = setTimeout(()=>this.gameWon(),4800)
+        this.gameWonTimeOut = setTimeout(() => this.gameWon(), 4800);
     };
     gameWon = () => {
         clearInterval(this.timerInterval);
-        clearTimeout(this.gameWonTimeOut)
+        clearTimeout(this.gameWonTimeOut);
         const resetWindow = document.querySelector(this.selectors.resetGame);
-        resetWindow.removeEventListener('dblclick',this.gameWon)
+        resetWindow.removeEventListener("dblclick", this.gameWon);
         const questionEnd = document.querySelector(this.selectors.questionEnd);
         let funnySapperImg = document.createElement("img");
         funnySapperImg.src = "./images/funnySapper.jpg";
         setTimeout(() => {
-            this.stopAllSounds()
-            this.playSound(this.soundSelectors.victory)
+            this.stopAllSounds();
+            this.playSound(this.soundSelectors.victory);
             resetWindow.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
             questionEnd.style.opacity = "1";
             questionEnd.prepend(funnySapperImg);
-            const newGameBtn = document.querySelector(this.selectors.newGameBtn);
+            const newGameBtn = document.querySelector(
+                this.selectors.newGameBtn
+            );
             newGameBtn.addEventListener("click", () => this.newGame(), {
                 once: true,
             });
@@ -476,7 +513,7 @@ class mineSweeperGame {
             const currFlag = fieldCell.element.lastElementChild;
             this.pullFlagAnimation(currFlag);
             amountFlagsElement.lastElementChild.innerText = this.amountFlags;
-            this.playSound(this.soundSelectors.pullFlag)
+            this.playSound(this.soundSelectors.pullFlag);
             fieldCell.isFlagged = false;
             return;
         } else {
@@ -491,7 +528,7 @@ class mineSweeperGame {
             flag.setAttribute("number", this.flagCounter);
             this.putFlagAnimation(flag);
             this.flagCounter++;
-            this.playSound(this.soundSelectors.putFlag)
+            this.playSound(this.soundSelectors.putFlag);
             fieldCell.element.appendChild(flag);
             fieldCell.isFlagged = true;
         }
@@ -524,18 +561,18 @@ class mineSweeperGame {
         this.revealed++;
         if (this.allCells[currRow][currCol].isMine) {
             const randBoom = Math.ceil(Math.random() * 5);
-            this.playSound(this.soundSelectors[`boom${randBoom}`])
+            this.playSound(this.soundSelectors[`boom${randBoom}`]);
             this.explosionAnimation(wrap);
             this.lostExplosion(currRow, currCol);
             return;
         }
         this.createParticle(wrap);
         if (this.allCells[currRow][currCol].mineCount == 0) {
-            this.playSound(this.soundSelectors.spawn)
+            this.playSound(this.soundSelectors.spawn);
             this.removeExtraEmpty(currRow, currCol);
             return;
         }
-        this.playSound(this.soundSelectors[`unhide${wrap.innerText}`])
+        this.playSound(this.soundSelectors[`unhide${wrap.innerText}`]);
         if (this.revealed == this.fieldRows * this.fieldCols - this.allMines) {
             this.wonAnimation();
             return;
@@ -561,9 +598,10 @@ class mineSweeperGame {
                             this.amountFlags++;
                             const amountFlagsElement = document.querySelector(
                                 this.selectors.amountFlags
-                            );                 
-                            amountFlagsElement.lastElementChild.innerText = this.amountFlags
-                            this.pullFlagAnimation(flag)
+                            );
+                            amountFlagsElement.lastElementChild.innerText =
+                                this.amountFlags;
+                            this.pullFlagAnimation(flag);
                         }
                         neighbour.isRevealed = true;
                         this.revealed++;
@@ -639,14 +677,19 @@ class mineSweeperGame {
         explosionAfter.className = "explosion-crater";
         element.appendChild(explosionAfter);
     }
-    revealNeighbours = (event) => {
+    checkNeighbours = (event) => {
         const target = event.target.closest(".fieldCell");
         if (!target) {
-            return;
+            return false;
         }
+
         const currRow = parseInt(target.getAttribute("row"));
         const currCol = parseInt(target.getAttribute("col"));
-        const minesAround = this.allCells[currRow][currCol].mineCount;
+        const fieldCell = this.allCells[currRow][currCol];
+        if (!fieldCell.isRevealed || fieldCell.mineCount == 0) {
+            return false;
+        }
+        const minesAround = fieldCell.mineCount;
         let counterFlags = 0;
         for (let row = -1; row <= 1; row++) {
             for (let col = -1; col <= 1; col++) {
@@ -665,6 +708,19 @@ class mineSweeperGame {
             }
         }
         if (counterFlags < minesAround) {
+            return false;
+        }
+        return true;
+    };
+    revealNeighbours = (event) => {
+        const eve = event;
+        const target = event.target.closest(".fieldCell");
+        if (!target) {
+            return;
+        }
+        const currRow = parseInt(target.getAttribute("row"));
+        const currCol = parseInt(target.getAttribute("col"));
+        if (!this.checkNeighbours(eve)) {
             return;
         }
         let maxNum = 1;
@@ -699,7 +755,7 @@ class mineSweeperGame {
                         return;
                     }
                     if (this.allCells[newRow][newCol].mineCount == 0) {
-                        this.playSound(this.soundSelectors.spawn)
+                        this.playSound(this.soundSelectors.spawn);
                         this.removeExtraEmpty(newRow, newCol);
                         playNum = false;
                         continue;
@@ -711,7 +767,9 @@ class mineSweeperGame {
                     playNumSound = true;
                     if (maxNum < parseInt(wrap.innerText)) {
                         maxNum = parseInt(wrap.innerText);
-                        this.playSound(this.soundSelectors[`unhide${wrap.innerText}`])
+                        this.playSound(
+                            this.soundSelectors[`unhide${wrap.innerText}`]
+                        );
                     }
                     if (
                         this.revealed ==
@@ -723,7 +781,7 @@ class mineSweeperGame {
             }
         }
         if (playNum && playNumSound) {
-            this.playSound(this.soundSelectors[`unhide${maxNum}`])
+            this.playSound(this.soundSelectors[`unhide${maxNum}`]);
         }
     };
     createParticle = (element) => {
@@ -754,34 +812,103 @@ class mineSweeperGame {
             { once: true }
         );
     };
-    playSound=(src)=>{
-        const audio = new Audio(src)
-        if (src.includes('boom') || src.includes('victoryBlue')){
-            audio.volume = 0.5
+    playSound = (src) => {
+        const audio = new Audio(src);
+        if (src.includes("boom") || src.includes("victoryBlue")) {
+            audio.volume = 0.5;
         }
-        audio.play()
-        this.playingSounds.push(audio)
-        audio.addEventListener('ended',()=>{
-            audio.remove()
-        },{once:true})
-    }
-    trigger = ()=>{
-        const gameField = document.querySelector(this.selectors.gameFieldElement)
-        gameField.classList.add('trig')
-        gameField.addEventListener('animationend',()=>{
-            gameField.classList.remove('trig')
-        })
-    }
-    showTouchMenu = (event)=>{
-        const target = event.target.closest('.fieldCell')
-        if (!target){return}
+        audio.play();
+        this.playingSounds.push(audio);
+        audio.addEventListener(
+            "ended",
+            () => {
+                audio.remove();
+            },
+            { once: true }
+        );
+    };
+    trigger = () => {
+        const gameField = document.querySelector(
+            this.selectors.gameFieldElement
+        );
+        gameField.classList.add("trig");
+        gameField.addEventListener("animationend", () => {
+            gameField.classList.remove("trig");
+        });
+    };
+    removeTouchButtons = () => {
+        if (this.focusedCell) {
+            this.focusedCell.classList.remove("focusedCell");
+        }
+        if (this.touchButtons.length != 0) {
+            for (let btn of this.touchButtons) {
+                btn.remove();
+            }
+            this.touchButtons = [];
+        }
+    };
+    showTouchMenu = (event) => {
+        const eve = event;
+        const target = event.target.closest(".fieldCell");
+        const neighbourCan = this.checkNeighbours(eve);
+        if (!target) {
+            return;
+        }
         const startRow = parseInt(target.getAttribute("row"));
         const startCol = parseInt(target.getAttribute("col"));
-        const fieldCell = this.allCells[startRow][startCol]
-        console.log(this.allCells);
-        
-        
-    }
+        const fieldCell = this.allCells[startRow][startCol];
+        this.removeTouchButtons();
+        if (fieldCell.isRevealed && !neighbourCan) {
+            return;
+        }
+        fieldCell.element.classList.add("focusedCell");
+        this.focusedCell = fieldCell.element;
+        const redFlagBtn = document.createElement("img");
+        redFlagBtn.src = "./svgs/flagBtn.svg";
+        redFlagBtn.classList.add("redFlagBtn");
+        const shovelBtn = document.createElement("img");
+        shovelBtn.classList.add("shovelBtn");
+        shovelBtn.src = "./svgs/shovel.svg";
+        const cancelBtn = document.createElement("img");
+        cancelBtn.src = "./svgs/cancel.svg";
+        cancelBtn.classList.add("cancelBtn");
+        if (startRow == 0) {
+            shovelBtn.style.top = "115%";
+            cancelBtn.style.top = "110%";
+        }
+        if (startCol == 0) {
+            redFlagBtn.style.left = "110%";
+            cancelBtn.style.left = "110%";
+        }
+        cancelBtn.addEventListener("pointerdown", this.removeTouchButtons);
+        if (fieldCell.isRevealed && neighbourCan) {
+            shovelBtn.addEventListener("pointerdown", () => {
+                this.removeTouchButtons();
+                this.revealNeighbours(eve);
+            });
+            this.touchButtons.push(cancelBtn);
+            this.touchButtons.push(shovelBtn);
+            fieldCell.element.appendChild(cancelBtn);
+            fieldCell.element.appendChild(shovelBtn);
+            redFlagBtn.remove();
+            
+        } else {
+            redFlagBtn.addEventListener("pointerdown", () => {
+                this.removeTouchButtons();
+                this.setRedFlag(eve);
+            });
+            shovelBtn.addEventListener("pointerdown", () => {
+                this.removeTouchButtons();
+                this.startCheck(eve);
+            });
+            this.touchButtons.push(cancelBtn);
+            this.touchButtons.push(shovelBtn);
+            this.touchButtons.push(redFlagBtn);
+            fieldCell.element.appendChild(cancelBtn);
+            fieldCell.element.appendChild(shovelBtn);
+            fieldCell.element.appendChild(redFlagBtn);
+        }
+    };
     spawnBombs = (event) => {
         if (event.button === 2) {
             return;
@@ -819,27 +946,27 @@ class mineSweeperGame {
         const gameField = document.querySelector(
             this.selectors.gameFieldElement
         );
-        this.trigger()
+        this.trigger();
         this.setNums();
         this.createParticle(wrap);
-        if (this.isTouchDevice){
-            gameField.addEventListener('pointerdown',(event)=>{
-                this.showTouchMenu(event)
-            })
-
+        if (this.isTouchDevice) {
+            gameField.addEventListener("pointerdown", (event) => {
+                this.showTouchMenu(event);
+            });
+        } else {
+            gameField.addEventListener("pointerdown", (event) =>
+                this.startCheck(event)
+            );
+            gameField.addEventListener("dblclick", (event) => {
+                this.revealNeighbours(event);
+            });
         }
         gameField.addEventListener("contextmenu", (event) => {
             event.preventDefault();
         });
-        this.playSound(this.soundSelectors.spawn)
+        this.playSound(this.soundSelectors.spawn);
         this.removeExtraEmpty(startRow, startCol);
         this.startGameTimer();
-        gameField.addEventListener("dblclick", (event) =>
-            this.revealNeighbours(event)
-        );
-        // gameField.addEventListener("pointerdown", (event) =>
-        //     this.startCheck(event)
-        // );
     };
     field = (gameField) => {
         for (let row = 0; row < this.fieldRows; row++) {
@@ -901,9 +1028,7 @@ class mineSweeperGame {
         this.timerInterval = setInterval(convert, 1000);
     };
     startGame = () => {
-        console.log(this.isTouchDevice);
-        
-        this.playingSounds = []
+        this.playingSounds = [];
         this.minesPositions = [];
         this.playVolume = true;
         const gameTimeElement = document.querySelector(this.selectors.gameTime);

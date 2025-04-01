@@ -36,6 +36,40 @@ body {
     padding-block: 20px;
     margin-bottom: 50px;
 }
+.redFlagBtn{
+    position: absolute;
+    width: 95%;
+    height: 95%;
+    z-index: 2;
+    border-radius: 50%;
+    background-color: var(--darkerGreen);
+    left: -110%;
+    scale: 1;
+}
+.focusedCell{
+    border: 6px solid var(--darkGreen);
+}
+.shovelBtn{
+    position: absolute;
+    width: 95%;
+    height: 95%;
+    z-index: 2;
+    border-radius: 50%;
+    background-color: var(--darkerGreen);
+    top: -110%;
+    scale: 1;
+}
+.cancelBtn{
+    position: absolute;
+    width: 65%;
+    height: 65%;
+    z-index: 2;
+    top: -80%;
+    left: -80%;
+    border-radius: 50%;
+    background-color: var(--darkerGreen);
+    
+}
 .startGame,
 .fieldSize {
     color: var(--black);
@@ -72,10 +106,7 @@ body {
     width: 800px;
     height: 640px;
 }
-.small img {
-    width: 70px;
-    height: 70px;
-}
+
 .middle {
     margin: 0 auto;
     font-size: 30px;
@@ -86,10 +117,7 @@ body {
     grid-template-columns: repeat(20, 1fr);
     grid-template-rows: repeat(16, 1fr);
 }
-.middle img {
-    width: 40px;
-    height: 40px;
-}
+
 .big {
     margin: 0 auto;
     display: grid;
@@ -98,10 +126,6 @@ body {
     grid-template-columns: repeat(30, 1fr);
     grid-template-rows: repeat(24, 1fr);
     font-size: 30px;
-}
-.big img {
-    width: 30px;
-    height: 30px;
 }
 
 .fieldCell {
@@ -402,18 +426,10 @@ option selected {
     .big {
         font-size: 26px;
     }
-    .big img {
-        width: 26px;
-        height: 26px;
-    }
     .middle {
         width: 83vw;
         height: 66vw;
         font-size: 32px;
-    }
-    .middle img {
-        width: 32px;
-        height: 32px;
     }
 }
 @media (max-width: 860px) {
@@ -421,10 +437,6 @@ option selected {
         width: 83vw;
         height: 66vw;
         font-size: 50px;
-    }
-    .small img {
-        width: 50px;
-        height: 50px;
     }
     .startGame {
         display: none;
@@ -437,66 +449,34 @@ option selected {
     .middle {
         font-size: 38px;
     }
-    .middle img {
-        width: 38px;
-        height: 38px;
-    }
 }
 @media (max-width: 750px) {
     .small {
         font-size: 42px;
     }
-    .small img {
-        width: 44px;
-        height: 44px;
-    }
     .middle {
         font-size: 36px;
-    }
-    .middle img {
-        width: 36px;
-        height: 36px;
     }
 }
 @media (max-width: 730px) {
     .big {
         font-size: 30px;
     }
-    .big img {
-        width: 30px;
-        height: 30px;
-    }
 }
 @media (max-width: 650px) {
     .big {
         font-size: 26px;
-    }
-    .big img {
-        width: 26px;
-        height: 26px;
     }
 }
 @media (max-width: 576px) {
     .big {
         font-size: 30px;
     }
-    .big img {
-        width: 30px;
-        height: 30px;
-    }
     .middle {
         font-size: 32px;
     }
-    .middle img {
-        width: 32px;
-        height: 32px;
-    }
     .small {
         font-size: 60px;
-    }
-    .small img {
-        width: 60px;
-        height: 60px;
     }
     .fieldSize {
         width: 140px;
@@ -524,16 +504,8 @@ option selected {
     .big {
         font-size: 24px;
     }
-    .big img {
-        width: 24px;
-        height: 24px;
-    }
     .small {
         font-size: 44px;
-    }
-    .small img {
-        width: 44px;
-        height: 44px;
     }
     .fieldSize {
         width: 140px;
@@ -541,10 +513,6 @@ option selected {
     }
     .middle {
         font-size: 30px;
-    }
-    .middle img {
-        width: 30px;
-        height: 30px;
     }
 }
 /* Цветочки */
@@ -843,11 +811,13 @@ option selected {
 /*Анимация флага*/
 .flag {
     position: absolute;
-    width: 70%;
-    height: 70%;
-    top: 5%;
-    left: 5%;
+    width: 80%;
+    height: 80%;
     z-index: 1;
+    scale: 1;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
 }
 
 .set {
@@ -856,19 +826,19 @@ option selected {
 @keyframes setting {
     0% {
         rotate: -12deg;
-        top: -10%;
+        translate: -50% -80%;
     }
     40% {
         rotate: 0deg;
-        top: 10%;
+        translate: -50% -55%;
     }
     70% {
         rotate: 6deg;
-        top: 2%;
+        translate: -50% -48%;
     }
     100% {
         rotate: 0;
-        top: 5%;
+        translate: -50% -50%;
     }
 }
 .fly1 {
@@ -878,36 +848,37 @@ option selected {
     0% {
         rotate: 0deg;
         scale: 1;
-        left: 5%;
-        top: 5%;
+        left: 50%;
+        top: 50%;
     }
     5% {
-        left: 22%;
-        top: -23%;
+        left: 67%;  /* +17% (было +17% от 5% до 22%) */
+        top: 27%;   /* -23% (было -28% от 5% до -23%) */
         rotate: 35deg;
     }
     40% {
         rotate: 90deg;
-        left: 55%;
-        top: -77%;
+        left: 100%; /* +50% (было +50% от 5% до 55%) */
+        top: -27%;  /* -77% (было -82% от 5% до -77%) */
     }
     57% {
         rotate: 120deg;
-        left: 72%;
-        top: -85%;
+        left: 117%; /* +67% (было +67% от 5% до 72%) */
+        top: -35%;  /* -85% (было -90% от 5% до -85%) */
     }
     78% {
         rotate: 160deg;
-        left: 93%;
-        top: -77%;
+        left: 138%; /* +88% (было +88% от 5% до 93%) */
+        top: -27%;  /* -77% */
     }
     100% {
         rotate: 190deg;
         scale: 0;
-        left: 115%;
-        top: 15%;
+        left: 160%; /* +110% (было +110% от 5% до 115%) */
+        top: 65%;   /* +15% (было +10% от 5% до 15%) */
     }
 }
+
 .fly2 {
     animation: flying2 .6s linear;
 }
@@ -915,36 +886,37 @@ option selected {
     0% {
         rotate: 0deg;
         scale: 1;
-        left: 5%;
-        top: 5%;
+        left: 50%;
+        top: 50%;
     }
     5% {
-        left: 8%;
-        top: -23%;
+        left: 53%;  /* +3% (было +3% от 5% до 8%) */
+        top: 27%;   /* -23% */
         rotate: -35deg;
     }
     40% {
         rotate: -90deg;
-        left: -25%;
-        top: -77%;
+        left: 25%;  /* -25% (было -30% от 5% до -25%) */
+        top: -27%;  /* -77% */
     }
     57% {
         rotate: -120deg;
-        left: -42%;
-        top: -85%;
+        left: 8%;   /* -42% (было -47% от 5% до -42%) */
+        top: -35%;  /* -85% */
     }
     78% {
         rotate: -160deg;
-        left: -63%;
-        top: -77%;
+        left: -13%; /* -63% (было -68% от 5% до -63%) */
+        top: -27%;  /* -77% */
     }
     100% {
         rotate: -190deg;
         scale: 0;
-        left: -85%;
-        top: 15%;
+        left: -35%; /* -85% (было -90% от 5% до -85%) */
+        top: 65%;   /* +15% */
     }
 }
+
 .fly3 {
     animation: flying3 .6s linear;
 }
@@ -952,36 +924,37 @@ option selected {
     0% {
         rotate: 0deg;
         scale: 1;
-        left: 5%;
-        top: 5%;
+        left: 50%;
+        top: 50%;
     }
     5% {
-        left: 30%;
-        top: 10%;
+        left: 75%;  /* +25% (было +25% от 5% до 30%) */
+        top: 60%;   /* +10% (было +5% от 5% до 10%) */
         rotate: 35deg;
     }
     40% {
         rotate: 90deg;
-        left: 75%;
-        top: 0%;
+        left: 120%; /* +70% (было +70% от 5% до 75%) */
+        top: 50%;   /* 0% (было -5% от 5% до 0%) */
     }
     57% {
         rotate: 120deg;
-        left: 92%;
-        top: 10%;
+        left: 137%; /* +87% (было +87% от 5% до 92%) */
+        top: 60%;   /* +10% */
     }
     78% {
         rotate: 160deg;
-        left: 113%;
-        top: 30%;
+        left: 158%; /* +108% (было +108% от 5% до 113%) */
+        top: 80%;   /* +30% (было +25% от 5% до 30%) */
     }
     100% {
         rotate: 190deg;
         scale: 0;
-        left: 135%;
-        top: 70%;
+        left: 180%; /* +130% (было +130% от 5% до 135%) */
+        top: 120%;  /* +70% (было +65% от 5% до 70%) */
     }
 }
+
 .fly4 {
     animation: flying4 .6s linear;
 }
@@ -989,33 +962,33 @@ option selected {
     0% {
         rotate: 0deg;
         scale: 1;
-        left: 5%;
-        top: 5%;
+        left: 50%;
+        top: 50%;
     }
     5% {
-        left: 0;
-        top: 10%;
+        left: 50%;  /* 0 (было -5% от 5% до 0%) */
+        top: 60%;   /* +10% */
         rotate: -35deg;
     }
     40% {
         rotate: -90deg;
-        left: -45%;
-        top: 0%;
+        left: 5%;   /* -45% (было -50% от 5% до -45%) */
+        top: 50%;   /* 0% */
     }
     57% {
         rotate: -120deg;
-        left: -62%;
-        top: 10%;
+        left: -12%; /* -62% (было -67% от 5% до -62%) */
+        top: 60%;   /* +10% */
     }
     78% {
         rotate: -160deg;
-        left: -83%;
-        top: 30%;
+        left: -33%; /* -83% (было -88% от 5% до -83%) */
+        top: 80%;   /* +30% */
     }
     100% {
         rotate: -190deg;
         scale: 0;
-        left: -105%;
-        top: 70%;
+        left: -55%; /* -105% (было -110% от 5% до -105%) */
+        top: 120%;  /* +70% */
     }
 }
