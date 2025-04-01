@@ -214,6 +214,7 @@ class mineSweeperGame {
     };
     showLostEnd = () => {
         const resetWindow = document.querySelector(this.selectors.resetGame);
+        resetWindow.removeEventListener('touchstart',this.showTouchLost)
         this.playVolume = false;
         this.playSound(this.soundSelectors.wasted);
         const questionEnd = document.querySelector(this.selectors.questionEnd);
@@ -472,6 +473,7 @@ class mineSweeperGame {
         clearTimeout(this.gameWonTimeOut);
         const resetWindow = document.querySelector(this.selectors.resetGame);
         resetWindow.removeEventListener("dblclick", this.gameWon);
+        resetWindow.removeEventListener('touchstart',this.showTouchWin)
         const questionEnd = document.querySelector(this.selectors.questionEnd);
         let funnySapperImg = document.createElement("img");
         funnySapperImg.src = "./images/funnySapper.jpg";
