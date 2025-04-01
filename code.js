@@ -3,9 +3,9 @@ class mineSweeperGame {
     allCells = [];
     gameWonTimeOut;
     isTouchDevice =
-        ("ontouchstart" in window ||
+        "ontouchstart" in window ||
         navigator.maxTouchPoints > 0 ||
-        navigator.msMaxTouchPoints > 0);
+        navigator.msMaxTouchPoints > 0;
     lastTap = new Date();
     revealed = 0;
     focusedCell;
@@ -59,15 +59,15 @@ class mineSweeperGame {
     constructor() {
         this.bindEvents();
     }
-    phoneDblClick = ()=>{
-        const currTap = new Date()
-        console.log(currTap - this.lastTap);   
-        if ((currTap - this.lastTap)>300){
-            this.lastTap = currTap
-            return false
+    phoneDblClick = () => {
+        const currTap = new Date();
+        console.log(currTap - this.lastTap);
+        if (currTap - this.lastTap > 300) {
+            this.lastTap = currTap;
+            return false;
         }
-        return true
-    }
+        return true;
+    };
     setNums = () => {
         for (let row = 0; row < this.fieldRows; row++) {
             for (let col = 0; col < this.fieldCols; col++) {
@@ -155,20 +155,21 @@ class mineSweeperGame {
             audio.remove();
         }
     };
-    showTouchLost = ()=>{
-        if (this.phoneDblClick()){
-            this.showLostEnd()
-            const resetWindow = document.querySelector(this.selectors.resetGame);
-            resetWindow.removeEventListener('touchstart',this.showTouchLost)
+    showTouchLost = () => {
+        if (this.phoneDblClick()) {
+            this.showLostEnd();
+            const resetWindow = document.querySelector(
+                this.selectors.resetGame
+            );
+            resetWindow.removeEventListener("touchstart", this.showTouchLost);
         }
-    }
+    };
     lostExplosion = (currRow, currCol) => {
         this.trigger();
         const resetWindow = document.querySelector(this.selectors.resetGame);
         resetWindow.style.display = "flex";
-        if (this.isTouchDevice){
-            resetWindow.addEventListener('touchstart',this.showTouchLost)
-            
+        if (this.isTouchDevice) {
+            resetWindow.addEventListener("touchstart", this.showTouchLost);
         }
         resetWindow.addEventListener("dblclick", this.showLostEnd, {
             once: true,
@@ -414,17 +415,19 @@ class mineSweeperGame {
 
         fieldCell.appendChild(flowersContainer);
     };
-    showTouchWin = ()=>{
-        if (this.phoneDblClick()){
-            this.gameWon()
-            const resetWindow = document.querySelector(this.selectors.resetGame);
-            resetWindow.removeEventListener('touchstart',this.showTouchWin)
+    showTouchWin = () => {
+        if (this.phoneDblClick()) {
+            this.gameWon();
+            const resetWindow = document.querySelector(
+                this.selectors.resetGame
+            );
+            resetWindow.removeEventListener("touchstart", this.showTouchWin);
         }
-    }
+    };
     wonAnimation = () => {
         const resetWindow = document.querySelector(this.selectors.resetGame);
-        if (this.isTouchDevice){
-            resetWindow.addEventListener('touchstart',this.showTouchWin)
+        if (this.isTouchDevice) {
+            resetWindow.addEventListener("touchstart", this.showTouchWin);
         }
         resetWindow.addEventListener("dblclick", this.gameWon, { once: true });
         resetWindow.style.display = "flex";
@@ -872,14 +875,7 @@ class mineSweeperGame {
         const cancelBtn = document.createElement("img");
         cancelBtn.src = "./svgs/cancel.svg";
         cancelBtn.classList.add("cancelBtn");
-        if (startRow == 0) {
-            shovelBtn.style.top = "115%";
-            cancelBtn.style.top = "110%";
-        }
-        if (startCol == 0) {
-            redFlagBtn.style.left = "110%";
-            cancelBtn.style.left = "110%";
-        }
+        const coordsCancelBtn = cancelBtn.getBoundingClientRect();
         cancelBtn.addEventListener("pointerdown", this.removeTouchButtons);
         if (fieldCell.isRevealed && neighbourCan) {
             shovelBtn.addEventListener("pointerdown", () => {
@@ -891,7 +887,17 @@ class mineSweeperGame {
             fieldCell.element.appendChild(cancelBtn);
             fieldCell.element.appendChild(shovelBtn);
             redFlagBtn.remove();
-            
+            const coordsShovelBtn = shovelBtn.getBoundingClientRect();
+            shovelBtn.style.top = -(coordsShovelBtn.height + 12) + "px";
+            cancelBtn.style.top = -(coordsShovelBtn.height - 6) + "px";
+            cancelBtn.style.left = -(coordsShovelBtn.height - 6) + "px";
+            if (startRow == 0) {
+                shovelBtn.style.top = coordsShovelBtn.height + 6 + "px";
+                cancelBtn.style.top = coordsShovelBtn.height + 6 + "px";
+            }
+            if (startCol == 0) {
+                cancelBtn.style.left = coordsShovelBtn.height + 6 + "px";
+            }
         } else {
             redFlagBtn.addEventListener("pointerdown", () => {
                 this.removeTouchButtons();
@@ -907,6 +913,20 @@ class mineSweeperGame {
             fieldCell.element.appendChild(cancelBtn);
             fieldCell.element.appendChild(shovelBtn);
             fieldCell.element.appendChild(redFlagBtn);
+            const coordsShovelBtn = shovelBtn.getBoundingClientRect();
+            const coordsFlagBtn = redFlagBtn.getBoundingClientRect();
+            shovelBtn.style.top = -(coordsShovelBtn.height +12) + 'px'
+            redFlagBtn.style.left = -(coordsFlagBtn.height+12) +'px'
+            cancelBtn.style.top = -(coordsFlagBtn.height-6) +'px'
+            cancelBtn.style.left = -(coordsFlagBtn.height-6) +'px'
+            if (startRow == 0) {
+                shovelBtn.style.top = (coordsShovelBtn.height +6) + 'px'
+                cancelBtn.style.top = (coordsShovelBtn.height +6) + 'px'
+            }
+            if (startCol == 0) {
+                redFlagBtn.style.left = (coordsFlagBtn.height+6) +'px'
+                cancelBtn.style.left = (coordsFlagBtn.height+6) +'px'
+            }
         }
     };
     spawnBombs = (event) => {

@@ -38,37 +38,30 @@ body {
 }
 .redFlagBtn{
     position: absolute;
-    width: 95%;
-    height: 95%;
+    width: 12vw;
+    height: 12vw;
     z-index: 2;
     border-radius: 50%;
     background-color: var(--darkerGreen);
-    left: -110%;
-    scale: 1;
 }
 .focusedCell{
     border: 6px solid var(--darkGreen);
 }
 .shovelBtn{
     position: absolute;
-    width: 95%;
-    height: 95%;
+    width: 12vw;
+    height: 12vw;
     z-index: 2;
     border-radius: 50%;
     background-color: var(--darkerGreen);
-    top: -110%;
-    scale: 1;
 }
 .cancelBtn{
     position: absolute;
-    width: 65%;
-    height: 65%;
+    width: 8vw;
+    height: 8vw;
     z-index: 2;
-    top: -80%;
-    left: -80%;
     border-radius: 50%;
     background-color: var(--darkerGreen);
-    
 }
 .startGame,
 .fieldSize {
