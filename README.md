@@ -22,6 +22,8 @@
 - **CSS**
 
 ---
+## 🧩 Превью
+![image](https://github.com/user-attachments/assets/90f22a50-63c2-4ee7-a22f-f3d172e4f76c)
 
 ## 🚀 Запуск локально
 
